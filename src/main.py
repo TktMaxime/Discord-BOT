@@ -1,4 +1,5 @@
 from http import server
+from tkinter import dnd
 from discord.ext import commands
 import discord
 import random
@@ -6,6 +7,7 @@ import random
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
+intents.presences = True
 bot = commands.Bot(
     command_prefix="!",  # Change to desired prefix
     case_insensitive=True,  # Commands aren't case-sensitive
@@ -53,6 +55,50 @@ async def ban(ctx, user: discord.Member):
     await user.ban(reason="aurevoir")
 
 
+@bot.command()
+async def count(ctx):
+    server = ctx.message.guild
+    online = []
+    idle = []
+    offline = []
+    doNotDisturb = []
+
+    for member in server.members:
+        status = str(member.status)
+        if status == "online":
+            online.append(member)
+        elif status == "dnd":
+            doNotDisturb.append(member)
+        elif status == "offline":
+            offline.append(member)
+        elif status == "idle":
+            idle.append(member)
+    await ctx.send("Those people are online")
+    for elt in online:
+        await ctx.send(elt)
+    await ctx.send("Those people are idle")
+    for elt in idle:
+        await ctx.send(elt)
+    await ctx.send("Those people are in do not disturb")
+    for elt in doNotDisturb:
+        await ctx.send(elt)
+    await ctx.send("Those people are offline")
+    for elt in offline:
+        await ctx.send(elt)
+
+    await ctx.send(f"{len(online)} are online, {len(idle)} are idle, {len(offline)} are offline and {len(doNotDisturb)} are in do not disturb")
+
+
+@bot.command()
+async def xkcd(ctx):
+    await ctx.send("https://xkcd.com/")
+
+
+@bot.command()
+async def poll(ctx, arg):
+    await ctx.send("@here" + arg)
+
+
 @bot.event
 async def on_message(message):
     if message.content == "Salut tout le monde":
@@ -60,5 +106,5 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-token = "MTAyMjE5MjU0MzQ0NzkwODM1NA.GtZk-t.EIq3eNhxQqFKGmn_EH99xrwAqq4QH7zkRp4GgA"
+token = "MTAyMjE5MjU0MzQ0NzkwODM1NA.GflTEP.2mTiwa8GRV0Cq15tGdetjym0hLnsqYvkC72tTA"
 bot.run(token)  # Starts the bot
