@@ -97,6 +97,8 @@ async def xkcd(ctx):
 @bot.command()
 async def poll(ctx, arg):
     await ctx.send("@here" + arg)
+    up = '\N{THUMBS UP SIGN}'
+    down = '\N{THUMBS DOWN SIGN}'
 
 
 @bot.event
